@@ -1,0 +1,7 @@
+#!/bin/sh
+
+PROGRAM_NAME="runtime"
+TEST_CASE="$1"
+
+make
+./$PROGRAM_NAME < tests/testcase$TEST_CASE.txt

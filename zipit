@@ -1,0 +1,48 @@
+#!/bin/sh
+
+mainfolder="hubert_obrzut"
+
+# all files with that extensions will be copied
+exts=(
+	cpp
+	hpp
+	png
+	tex
+	pdf
+	txt
+	md
+)
+
+# additional files to copy
+addfiles=(
+	Makefile
+	merger
+)
+
+get_filename() {
+	echo "${1##.*/}"
+}
+
+# expand glob to empty string if nothing matches
+# instead of not expanding the glob and treating it
+# just as a normal string
+shopt -s nullglob
+
+for folder in $(find . -type d -regex '\./[^.]*$'); do
+	mkdir -p "$mainfolder/$folder"
+	for ext in "${exts[@]}"; do
+		for file in $folder/*.$ext; do
+			filename=$(get_filename "$file")
+			cp "$file" "$mainfolder/$file"
+		done
+	done
+	for addfile in "${addfiles[@]}"; do
+		if [ -e "$folder/$addfile" ]; then
+			cp "$folder/$addfile" "$mainfolder/$folder/$addfile"
+		fi
+	done
+done
+
+rm -f raport.zip
+zip -r raport.zip $mainfolder
+rm -rf $mainfolder

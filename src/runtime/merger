@@ -1,0 +1,20 @@
+#!/bin/sh
+
+DEPS=(
+	Common.hpp
+	JPSPlus.hpp
+	JPSPlus.cpp
+	main.cpp
+)
+
+output="CGSolver"
+cat "${DEPS[@]}" > tempfile
+sed -i -e '/HPP/d' -e '/include "/d' tempfile
+# echo '#define DEBUG' | cat - tempfile > $output.cpp
+cat tempfile > $output.cpp
+rm tempfile
+
+g++ $output.cpp -o $output -std=c++17 -Wall -Wextra -Wreorder -Ofast -O3 -flto -march=native -s
+rm $output
+
+clipcp $output.cpp
